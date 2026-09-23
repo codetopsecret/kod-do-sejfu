@@ -26,20 +26,13 @@ body {
     justify-content: center;
 }
 
-/* =========================
-   USTAWIENIA WYGLĄDU
-   ========================= */
-
 :root {
     --cell: clamp(58px, 16vw, 105px);
 }
 
-/* TŁO */
-
 .background {
     position: fixed;
     inset: 0;
-
     background:
         radial-gradient(
             circle at 50% 45%,
@@ -49,16 +42,11 @@ body {
         );
 }
 
-/* ZAMEK */
-
 .lock {
     position: relative;
     z-index: 5;
-
     width: min(94vw, 620px);
-
     padding: clamp(18px, 5vw, 32px);
-
     border-radius: 25px;
 
     background:
@@ -86,21 +74,16 @@ body {
         opacity: 0;
         transform: scale(.9);
     }
-
     to {
         opacity: 1;
         transform: scale(1);
     }
 }
 
-/* GÓRNA LISTWA */
-
 .top-line {
     width: 70%;
     height: 4px;
-
     margin: 0 auto 18px;
-
     border-radius: 10px;
 
     background:
@@ -116,19 +99,13 @@ body {
     opacity: .55;
 }
 
-/* CAŁY MECHANIZM */
-
 .digits {
     position: relative;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     gap: clamp(5px, 2vw, 14px);
-
     padding: 12px 6px;
-
     border-radius: 16px;
 
     background:
@@ -144,19 +121,12 @@ body {
         inset 0 -8px 16px rgba(0,0,0,.9);
 }
 
-/* POJEDYNCZE OKIENKO CYFRY */
-
 .reel {
     position: relative;
-
     flex: 1 1 0;
-
     min-width: 0;
-
     height: calc(var(--cell) * 3);
-
     overflow: hidden;
-
     border-radius: 12px;
 
     background:
@@ -176,27 +146,19 @@ body {
         0 3px 6px rgba(0,0,0,.8);
 }
 
-/* CIENIE GÓRA/DÓŁ */
-
 .reel::before,
 .reel::after {
     content: "";
-
     position: absolute;
-
     left: 0;
     right: 0;
-
     height: 36%;
-
     z-index: 5;
-
     pointer-events: none;
 }
 
 .reel::before {
     top: 0;
-
     background:
         linear-gradient(
             to bottom,
@@ -207,7 +169,6 @@ body {
 
 .reel::after {
     bottom: 0;
-
     background:
         linear-gradient(
             to top,
@@ -216,57 +177,38 @@ body {
         );
 }
 
-/* PASEK ODCZYTU */
-
 .pointer {
     position: absolute;
-
     z-index: 10;
-
     left: -2px;
     right: -2px;
-
     top: 50%;
-
     height: 3px;
-
     transform: translateY(-50%);
-
     background: #eee;
 
     box-shadow:
         0 0 6px rgba(255,255,255,.9);
 }
 
-/* LISTA CYFR */
-
 .strip {
     position: absolute;
-
     left: 0;
     top: 0;
-
     width: 100%;
-
     will-change: transform;
 }
 
-/* KAŻDA CYFRA MA DOKŁADNIE TAKĄ SAMĄ WYSOKOŚĆ */
-
 .digit {
     width: 100%;
-
     height: var(--cell);
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     font-size: calc(var(--cell) * .78);
-
     font-weight: 700;
-
     line-height: var(--cell);
 
     color: #f1f1f1;
@@ -276,39 +218,25 @@ body {
         0 0 8px rgba(255,255,255,.12);
 
     font-variant-numeric: tabular-nums;
-
     flex-shrink: 0;
 }
 
-/* DOLNA LISTWA */
-
 .bottom-line {
     width: 55%;
-
     height: 3px;
-
     margin: 18px auto 0;
-
     border-radius: 10px;
-
     background: #777;
-
     opacity: .4;
 }
 
-/* KONFETTI */
-
 .confetti {
     position: fixed;
-
     left: 50%;
     top: 50%;
-
     width: 7px;
     height: 13px;
-
     z-index: 30;
-
     pointer-events: none;
 
     animation:
@@ -318,10 +246,8 @@ body {
 }
 
 @keyframes fly {
-
     0% {
         opacity: 1;
-
         transform:
             translate(-50%, -50%)
             rotate(0deg);
@@ -329,7 +255,6 @@ body {
 
     100% {
         opacity: 0;
-
         transform:
             translate(
                 calc(-50% + var(--x)),
@@ -379,33 +304,21 @@ body {
 
 <script>
 
-/* ==================================================
-   🔐 TUTAJ ZMIENIASZ KOD
-   ================================================== */
+/* =========================
+   🔐 TWÓJ KOD
+   ========================= */
 
 const KOD = [5, 3, 4, 9];
 
-/* Czas przed rozpoczęciem */
-
 const START = 900;
-
-/* Czas obrotu jednej tarczy */
-
 const OBROT = 1500;
-
-/* Przerwa pomiędzy tarczami */
-
 const PRZERWA = 220;
-
-/* Liczba konfetti */
-
 const KONFETTI = 180;
 
 
-/* ==================================================
-   KONIEC USTAWIEŃ
-   ================================================== */
-
+/* =========================
+   TARCZE
+   ========================= */
 
 const reels = [
     document.getElementById("reel0"),
@@ -416,26 +329,22 @@ const reels = [
 
 
 /*
-   Tworzymy długi pasek cyfr.
-   Każda cyfra ma IDENTYCZNĄ wysokość.
+   Tworzymy cyfry.
+   Jest kilka pełnych obrotów,
+   ale zawsze kończymy na właściwej cyfrze.
 */
 
 function buildReel(strip) {
 
     strip.innerHTML = "";
 
-    /*
-       8 pełnych obrotów.
-    */
-
-    for (let round = 0; round < 8; round++) {
+    for (let round = 0; round < 10; round++) {
 
         for (let number = 0; number <= 9; number++) {
 
             const digit = document.createElement("div");
 
             digit.className = "digit";
-
             digit.textContent = number;
 
             strip.appendChild(digit);
@@ -445,8 +354,7 @@ function buildReel(strip) {
 
 
 /*
-   Wysokość jednej cyfry pobieramy
-   bezpośrednio z przeglądarki.
+   Wysokość jednej cyfry.
 */
 
 function getCellHeight() {
@@ -459,7 +367,7 @@ function getCellHeight() {
 
 
 /*
-   Ustawiamy wszystkie tarcze na 0000.
+   START = 0000
 */
 
 function showZeros() {
@@ -471,18 +379,18 @@ function showZeros() {
         strip.style.transition = "none";
 
         /*
-           Pozycja 1 oznacza cyfrę 0
-           dokładnie w środku okienka.
+           Pierwsze zero znajduje się
+           na pozycji 0.
         */
 
         strip.style.transform =
-            `translateY(${-h}px)`;
+            `translateY(0px)`;
     });
 }
 
 
 /*
-   Obrót pojedynczej tarczy.
+   OBRÓT JEDNEJ TARCZY
 */
 
 function spin(index, target) {
@@ -490,41 +398,32 @@ function spin(index, target) {
     return new Promise(resolve => {
 
         const strip = reels[index];
-
         const h = getCellHeight();
 
         /*
-           Startujemy od cyfry 0
-           znajdującej się w dalszej części paska.
+           Aktualnie pokazujemy pierwsze zero.
+           Przeskakujemy bez animacji do
+           dalszego miejsca z zerem.
         */
 
-        const startPosition = 31;
+        const startPosition = 30;
 
         /*
-           4 pełne obroty + właściwa cyfra.
+           Cztery pełne obroty + właściwa cyfra.
         */
 
         const targetPosition =
             startPosition + 40 + target;
-
-        /*
-           Przenosimy ją bez animacji
-           do pozycji startowej.
-        */
 
         strip.style.transition = "none";
 
         strip.style.transform =
             `translateY(${-startPosition * h}px)`;
 
-        /*
-           Wymuszamy przeliczenie layoutu.
-        */
-
         void strip.offsetHeight;
 
         /*
-           TERAZ OBRÓT.
+           Właściwy obrót.
         */
 
         strip.style.transition =
@@ -537,17 +436,15 @@ function spin(index, target) {
         setTimeout(() => {
 
             /*
-               Po zakończeniu ustawiamy identyczną
-               cyfrę w pierwszej części paska.
-
-               Dzięki temu kolejna animacja
-               może działać bez błędów.
+               Po animacji NIE przeskakujemy
+               na inną pozycję.
+               Dzięki temu nie ma pustego pola.
             */
 
             strip.style.transition = "none";
 
             strip.style.transform =
-                `translateY(${-(1 + target) * h}px)`;
+                `translateY(${-targetPosition * h}px)`;
 
             resolve();
 
@@ -633,11 +530,6 @@ function launchConfetti() {
 
 async function start() {
 
-    /*
-       Początek:
-       0000
-    */
-
     showZeros();
 
     await new Promise(resolve =>
@@ -645,9 +537,7 @@ async function start() {
     );
 
 
-    /*
-       1️⃣ 0000 → 7000
-    */
+    /* 0000 → 5000 */
 
     await spin(0, KOD[0]);
 
@@ -656,9 +546,7 @@ async function start() {
     );
 
 
-    /*
-       2️⃣ 7000 → 7500
-    */
+    /* 5000 → 5300 */
 
     await spin(1, KOD[1]);
 
@@ -667,9 +555,7 @@ async function start() {
     );
 
 
-    /*
-       3️⃣ 7500 → 7560
-    */
+    /* 5300 → 5340 */
 
     await spin(2, KOD[2]);
 
@@ -678,23 +564,19 @@ async function start() {
     );
 
 
-    /*
-       4️⃣ 7560 → 7561
-    */
+    /* 5340 → 5349 */
 
     await spin(3, KOD[3]);
 
 
-    /*
-       💥 KOD ODKRYTY
-    */
+    /* 🎉 */
 
     launchConfetti();
 }
 
 
 /*
-   START PO ZAŁADOWANIU STRONY
+   START
 */
 
 window.addEventListener("load", () => {
