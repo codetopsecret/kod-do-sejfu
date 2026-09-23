@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Zamek</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    overflow: hidden;
+    background: #050505;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* ================================
+   USTAWIENIA WYGLĄDU
+   ================================ */
+
+:root {
+    --metal-dark: #151515;
+    --metal-mid: #383838;
+    --metal-light: #777;
+    --digit-size: clamp(72px, 19vw, 125px);
+}
+
+/* Tło */
+
+.background {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 45%, #202020 0%, #090909 42%, #000 100%);
+}
+
+/* Delikatne światło */
+
+.background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255,255,255,0.07),
+        transparent 55%
+    );
+}
+
+/* Obudowa zamka */
+
+.lock {
+    position: relative;
+    z-index: 5;
+
+    width: min(94vw, 620px);
+    padding: clamp(20px, 5vw, 35px);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #555,
+            #202020 18%,
+            #090909 50%,
+            #353535 85%,
+            #111
+        );
+
+    border: 2px solid #777;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,0.9),
+        inset 0 2px 2px rgba(255,255,255,0.22),
+        inset 0 -4px 8px rgba(0,0,0,0.8);
+
+    opacity: 0;
+    transform: scale(0.92);
+
+    animation: appear 0.7s ease-out forwards;
+}
+
+@keyframes appear {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Górny pasek */
+
+.top-line {
+    width: 75%;
+    height: 4px;
+    margin: 0 auto 18px;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #aaa,
+        #fff,
+        #aaa,
+        transparent
+    );
+
+    opacity: 0.55;
+}
+
+/* Mechanizm cyfr */
+
+.digits {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: clamp(5px, 2vw, 15px);
+
+    padding: clamp(14px, 4vw, 25px) 5px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #090909,
+            #252525 48%,
+            #080808
+        );
+
+    box-shadow:
+        inset 0 8px 15px rgba(0,0,0,0.8),
+        inset 0 -8px 15px rgba(0,0,0,0.8);
+
+    overflow: hidden;
+}
+
+/* Pojedyncze pokrętło */
+
+.reel {
+    position: relative;
+
+    width: calc((100% - 45px) / 4);
+    max-width: 120px;
+
+    height: calc(var(--digit-size) * 1.55);
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #111,
+            #3a3a3a 18%,
+            #171717 50%,
+            #3d3d3d 82%,
+            #111
+        );
+
+    border: 2px solid #111;
+
+    box-shadow:
+        inset 0 0 15px rgba(0,0,0,0.9),
+        0 3px 5px rgba(0,0,0,0.8);
+}
+
+/* Górne i dolne przyciemnienie */
+
+.reel::before,
+.reel::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 32%;
+
+    z-index: 3;
+    pointer-events: none;
+}
+
+.reel::before {
+    top: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.9),
+            rgba(0,0,0,0)
+        );
+}
+
+.reel::after {
+    bottom: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,0.9),
+            rgba(0,0,0,0)
+        );
+}
+
+/* Pasek wskazujący właściwą cyfrę */
+
+.reel::marker {
+    display: none;
+}
+
+.pointer {
+    position: absolute;
+
+    left: -2px;
+    right: -2px;
+
+    top: 50%;
+    transform: translateY(-50%);
+
+    height: 3px;
+
+    z-index: 10;
+
+    background: #ddd;
+
+    box-shadow:
+        0 0 5px rgba(255,255,255,0.8);
+}
+
+/* Cyfry */
+
+.strip {
+    position: absolute;
+
+    width: 100%;
+
+    left: 0;
+    top: 0;
+
+    will-change: transform;
+}
+
+.n {
+    height: calc(var(--digit-size) * 0.51);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #eee;
+
+    font-size: var(--digit-size);
+    font-weight: 700;
+
+    line-height: 1;
+
+    text-shadow:
+        0 2px 2px #000,
+        0 0 8px rgba(255,255,255,0.15);
+
+    font-variant-numeric: tabular-nums;
+}
+
+/* Centralne światło */
+
+.center-glow {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 90%;
+    height: 40px;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 4;
+
+    pointer-events: none;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.05),
+        transparent
+    );
+}
+
+/* Dolna część zamka */
+
+.bottom-line {
+    width: 55%;
+    height: 3px;
+
+    margin: 18px auto 0;
+
+    border-radius: 10px;
+
+    background: #777;
+
+    opacity: 0.35;
+}
+
+/* KONFETTI */
+
+.confetti {
+    position: fixed;
+
+    left: 50%;
+    top: 50%;
+
+    width: 8px;
+    height: 14px;
+
+    z-index: 20;
+
+    pointer-events: none;
+
+    opacity: 0;
+}
+
+@keyframes confetti {
+    0% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            rotate(0deg)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(
+                calc(-50% + var(--x)),
+                calc(-50% + var(--y))
+            )
+            rotate(var(--r))
+            scale(0.7);
+    }
+}
+
+/* Telefon pionowo */
+
+@media (max-width: 420px) {
+
+    .lock {
+        width: 96vw;
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .digits {
+        gap: 5px;
+        padding: 12px 4px;
+    }
+
+    .reel {
+        border-radius: 9px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="lock">
+
+    <div class="top-line"></div>
+
+    <div class="digits">
+
+        <div class="reel">
+            <div class="strip" id="strip0"></div>
+            <div class="center-glow"></div>
+            <div class="pointer"></div>
+        </div>
+
+        <div class="reel">
+            <div class="strip" id="strip1"></div>
+            <div class="center-glow"></div>
+            <div class="pointer"></div>
+        </div>
+
+        <div class="reel">
+            <div class="strip" id="strip2"></div>
+            <div class="center-glow"></div>
+            <div class="pointer"></div>
+        </div>
+
+        <div class="reel">
+            <div class="strip" id="strip3"></div>
+            <div class="center-glow"></div>
+            <div class="pointer"></div>
+        </div>
+
+    </div>
+
+    <div class="bottom-line"></div>
+
+</div>
+
+<script>
+
+/* =====================================================
+   🔐 USTAWIENIA — TUTAJ ZMIENIASZ SWÓJ KOD
+   ===================================================== */
+
+/* Twój czterocyfrowy kod */
+
+const KOD = [7, 5, 6, 1];
+
+/* Ile czekamy przed rozpoczęciem */
+
+const CZAS_STARTU = 900;
+
+/* Czas obrotu jednej cyfry */
+
+const CZAS_OBROTU = 1900;
+
+/* Przerwa pomiędzy kolejnymi cyframi */
+
+const PRZERWA = 250;
+
+/* Liczba kawałków konfetti */
+
+const LICZBA_KONFETTI = 180;
+
+/* =====================================================
+   KONIEC USTAWIEŃ
+   ===================================================== */
+
+
+const strips = [
+    document.getElementById("strip0"),
+    document.getElementById("strip1"),
+    document.getElementById("strip2"),
+    document.getElementById("strip3")
+];
+
+
+/*
+   Tworzymy cyfry.
+
+   Jest kilka pełnych obrotów, dzięki czemu
+   nie wygląda to jak zwykłe przesunięcie,
+   tylko jak prawdziwy mechanizm zamka.
+*/
+
+function createReel(strip) {
+
+    strip.innerHTML = "";
+
+    const rounds = 6;
+
+    for (let r = 0; r < rounds; r++) {
+
+        for (let n = 0; n <= 9; n++) {
+
+            const div = document.createElement("div");
+
+            div.className = "n";
+            div.textContent = n;
+
+            strip.appendChild(div);
+        }
+    }
+}
+
+
+/*
+   Pobieramy rzeczywistą wysokość jednej cyfry.
+   Dzięki temu animacja dopasuje się do iPhone'a
+   i innych ekranów.
+*/
+
+function getDigitHeight() {
+
+    const firstDigit = strips[0].querySelector(".n");
+
+    return firstDigit.getBoundingClientRect().height;
+}
+
+
+/*
+   Ustawienie wszystkich cyfr na 0000.
+*/
+
+function resetReels() {
+
+    const h = getDigitHeight();
+
+    strips.forEach((strip) => {
+
+        strip.style.transition = "none";
+
+        /*
+           Cyfra 0 znajduje się na początku.
+        */
+
+        strip.style.transform =
+            `translateY(${-(0) * h}px)`;
+    });
+}
+
+
+/*
+   Obrót jednej cyfry.
+*/
+
+function spinReel(index, target) {
+
+    return new Promise(resolve => {
+
+        const strip = strips[index];
+
+        const h = getDigitHeight();
+
+        /*
+           Startujemy wysoko na pasku,
+           żeby uzyskać kilka pełnych obrotów.
+        */
+
+        const rounds = 4;
+
+        /*
+           Początek w pierwszym pełnym zestawie.
+        */
+
+        const startPosition = 10 + target;
+
+        /*
+           Cel znajduje się kilka obrotów dalej.
+        */
+
+        const targetPosition =
+            startPosition + rounds * 10;
+
+        /*
+           Najpierw ustawiamy pozycję startową
+           bez animacji.
+        */
+
+        strip.style.transition = "none";
+
+        strip.style.transform =
+            `translateY(${-startPosition * h}px)`;
+
+        /*
+           Wymuszamy odświeżenie przeglądarki.
+        */
+
+        void strip.offsetHeight;
+
+        /*
+           Teraz właściwy obrót.
+        */
+
+        strip.style.transition =
+            `transform ${CZAS_OBROTU}ms cubic-bezier(0.15, 0.75, 0.18, 1)`;
+
+        strip.style.transform =
+            `translateY(${-targetPosition * h}px)`;
+
+        /*
+           Po zakończeniu ustawiamy ponownie
+           równoważną pozycję w pierwszej części.
+        */
+
+        setTimeout(() => {
+
+            strip.style.transition = "none";
+
+            const finalPosition = target;
+
+            strip.style.transform =
+                `translateY(${-finalPosition * h}px)`;
+
+            resolve();
+
+        }, CZAS_OBROTU + 50);
+    });
+}
+
+
+/*
+   Konfetti 🎉
+*/
+
+function createConfetti() {
+
+    for (let i = 0; i < LICZBA_KONFETTI; i++) {
+
+        const piece = document.createElement("div");
+
+        piece.className = "confetti";
+
+        const angle =
+            Math.random() * Math.PI * 2;
+
+        const distance =
+            120 + Math.random() * 330;
+
+        const x =
+            Math.cos(angle) * distance;
+
+        const y =
+            Math.sin(angle) * distance;
+
+        const rotation =
+            (Math.random() - 0.5) * 1400;
+
+        const size =
+            5 + Math.random() * 8;
+
+        piece.style.width = size + "px";
+        piece.style.height = (size * 1.7) + "px";
+
+        piece.style.setProperty("--x", x + "px");
+        piece.style.setProperty("--y", y + "px");
+        piece.style.setProperty("--r", rotation + "deg");
+
+        /*
+           Losowy kolor.
+        */
+
+        const colors = [
+            "#ffffff",
+            "#ffd700",
+            "#ff3b30",
+            "#34c759",
+            "#0a84ff",
+            "#ff2d55",
+            "#bf5af2"
+        ];
+
+        piece.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+
+        piece.style.animation =
+            `confetti ${1.1 + Math.random() * 1.3}s cubic-bezier(.15,.7,.2,1) forwards`;
+
+        document.body.appendChild(piece);
+
+        /*
+           Usuwamy element po zakończeniu animacji.
+        */
+
+        setTimeout(() => {
+            piece.remove();
+        }, 2600);
+    }
+}
+
+
+/*
+   START ANIMACJI
+*/
+
+async function start() {
+
+    /*
+       Najpierw upewniamy się,
+       że wszystko jest ustawione na 0000.
+    */
+
+    resetReels();
+
+    /*
+       Krótka chwila ciszy.
+    */
+
+    await new Promise(resolve =>
+        setTimeout(resolve, CZAS_STARTU)
+    );
+
+    /*
+       Obracamy po kolei:
+
+       0 → 7
+       0 → 5
+       0 → 6
+       0 → 1
+    */
+
+    for (let i = 0; i < KOD.length; i++) {
+
+        await spinReel(i, KOD[i]);
+
+        /*
+           Krótka przerwa pomiędzy pokrętłami.
+        */
+
+        if (i < KOD.length - 1) {
+
+            await new Promise(resolve =>
+                setTimeout(resolve, PRZERWA)
+            );
+        }
+    }
+
+    /*
+       Kod ustawiony.
+       💥 KONFETTI!
+    */
+
+    createConfetti();
+}
+
+
+/*
+   Czekamy aż strona będzie gotowa.
+*/
+
+window.addEventListener("load", () => {
+
+    /*
+       Dajemy przeglądarce chwilę na
+       prawidłowe obliczenie rozmiarów.
+    */
+
+    strips.forEach(createReel);
+
+    requestAnimationFrame(() => {
+
+        resetReels();
+
+        setTimeout(start, 300);
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
