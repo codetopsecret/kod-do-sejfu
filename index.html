@@ -367,7 +367,7 @@ function getCellHeight() {
 
 
 /*
-   START = 0000
+   START = 9999
 */
 
 function showZeros() {
@@ -380,7 +380,7 @@ function showZeros() {
 
         /*
            Pierwsze zero znajduje się
-           na pozycji 0.
+           na pozycji 9.
         */
 
         strip.style.transform =
@@ -406,7 +406,7 @@ function spin(index, target) {
            dalszego miejsca z zerem.
         */
 
-        const startPosition = 0;
+        const startPosition = 9;
 
         /*
            Cztery pełne obroty + właściwa cyfra.
@@ -505,7 +505,7 @@ function launchConfetti() {
 
         piece.style.setProperty(
             "--duration",
-            `${1.2 + Math.random() * 1.2}s`
+            `${3.5 + Math.random() * 2.5}s`
         );
 
         piece.style.background =
