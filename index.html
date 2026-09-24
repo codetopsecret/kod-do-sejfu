@@ -571,7 +571,11 @@ async function start() {
 
     /* 🎉 */
 
-    setInterval(launchConfetti, 1000);
+    launchConfetti();
+
+setTimeout(() => launchConfetti(), 700);
+
+setTimeout(() => launchConfetti(), 1400);
 }
 
 
