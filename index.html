@@ -311,8 +311,8 @@ body {
 const KOD = [7, 5, 6, 1];
 
 const START = 900;
-const OBROT = 1500;
-const PRZERWA = 220;
+const OBROT = 2500;
+const PRZERWA = 400;
 const KONFETTI = 180;
 
 
@@ -367,7 +367,7 @@ function getCellHeight() {
 
 
 /*
-   START = 8888
+   START = 0000
 */
 
 function showZeros() {
@@ -406,7 +406,7 @@ function spin(index, target) {
            dalszego miejsca z zerem.
         */
 
-        const startPosition = 10;
+        const startPosition = 30;
 
         /*
            Cztery pełne obroty + właściwa cyfra.
@@ -537,7 +537,7 @@ async function start() {
     );
 
 
-    /* 0000 → 5000 */
+    /* 0000 → 7000 */
 
     await spin(0, KOD[0]);
 
@@ -546,7 +546,7 @@ async function start() {
     );
 
 
-    /* 5000 → 5300 */
+    /* 7000 → 7500 */
 
     await spin(1, KOD[1]);
 
@@ -555,7 +555,7 @@ async function start() {
     );
 
 
-    /* 5300 → 5340 */
+    /* 7500 → 7560 */
 
     await spin(2, KOD[2]);
 
@@ -564,7 +564,7 @@ async function start() {
     );
 
 
-    /* 5340 → 5349 */
+    /* 7560 → 7561 */
 
     await spin(3, KOD[3]);
 
