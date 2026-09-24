@@ -338,6 +338,18 @@ function buildReel(strip) {
 
     strip.innerHTML = "";
 
+    /* Jedna 9 przed pierwszym zerem */
+
+    const firstNine = document.createElement("div");
+
+    firstNine.className = "digit";
+
+    firstNine.textContent = 9;
+
+    strip.appendChild(firstNine);
+
+    /* Reszta cyfr */
+
     for (let round = 0; round < 10; round++) {
 
         for (let number = 0; number <= 9; number++) {
@@ -345,13 +357,16 @@ function buildReel(strip) {
             const digit = document.createElement("div");
 
             digit.className = "digit";
+
             digit.textContent = number;
 
             strip.appendChild(digit);
-        }
-    }
-}
 
+        }
+
+    }
+
+}
 
 /*
    Wysokość jednej cyfry.
