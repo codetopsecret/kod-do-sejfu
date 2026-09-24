@@ -308,11 +308,11 @@ body {
    🔐 TWÓJ KOD
    ========================= */
 
-const KOD = [7, 5, 6, 1];
+const KOD = [5, 3, 4, 9];
 
-const START = 2000;
-const OBROT = 3500;
-const PRZERWA = 1500;
+const START = 900;
+const OBROT = 1500;
+const PRZERWA = 220;
 const KONFETTI = 180;
 
 
@@ -367,7 +367,7 @@ function getCellHeight() {
 
 
 /*
-   START = 9999
+   START = 0000
 */
 
 function showZeros() {
@@ -380,14 +380,12 @@ function showZeros() {
 
         /*
            Pierwsze zero znajduje się
-           na pozycji 9.
+           na pozycji 0.
         */
 
         strip.style.transform =
-        `translateY(0px)`;
-
-    
-    
+            `translateY(0px)`;
+    });
 }
 
 
@@ -408,7 +406,7 @@ function spin(index, target) {
            dalszego miejsca z zerem.
         */
 
-        const startPosition = 9;
+        const startPosition = 30;
 
         /*
            Cztery pełne obroty + właściwa cyfra.
@@ -507,7 +505,7 @@ function launchConfetti() {
 
         piece.style.setProperty(
             "--duration",
-            `${3.5 + Math.random() * 2.5}s`
+            `${1.2 + Math.random() * 1.2}s`
         );
 
         piece.style.background =
@@ -574,10 +572,6 @@ async function start() {
     /* 🎉 */
 
     launchConfetti();
-
-setTimeout(() => launchConfetti(), 700);
-
-setTimeout(() => launchConfetti(), 1400);
 }
 
 
